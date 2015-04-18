@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans xmlns="http://www.springframework.org/schema/beans"   
+       xmlns:context="http://www.springframework.org/schema/context"  
+       xmlns:tx="http://www.springframework.org/schema/tx"  
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd   
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd   
+                           http://www.springframework.org/schema/tx      http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">   
+
+
+  
+ <bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">  
+    <property name="dataSource" ref="dataSource" />  
+    <property name="databaseSchemaUpdate" value="true"></property>
+    <property name="transactionManager" ref="transactionManager" />  
+    <property name="jobExecutorActivate" value="false" /> 
+    <!-- 历史存档等级配置， 
+    	 	none：不存储历史归档，
+    	 	activity：归档所有流程实例和活动实例。不归档细节，
+    	 	audit：默认级别,归档所有流程实例，活动实例和提交的表单属性。以至于通过表单的所有用户交互都是可跟踪并可以被审计。
+    	 	full:保存audit级别的所有信息加上像流程变量的所有其它可能的细节。
+    	  -->
+     <property name="history" value="full" /> 
+     <!-- 设置流程图字体，解决乱码问题 -->
+    	 <property name="activityFontName" value="宋体" />
+    	 <property name="labelFontName" value="宋体" />
+  </bean>  
+    
+  <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">  
+    <property name="processEngineConfiguration" ref="processEngineConfiguration" />  
+  </bean>  
+    
+  <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />  
+  <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService" />  
+  <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService" />  
+  <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />  
+  <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService" />  
+  
+</beans>
